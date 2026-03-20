@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { money } from "@/lib/money"
-import { format } from "date-fns"
+import { DateTime } from "luxon"
 
 export function AnalyticalCards({
   data,
@@ -24,6 +24,12 @@ export function AnalyticalCards({
     lastCollectionDate?: Date
   }
 }) {
+  let lastCollectionDate
+  if (data.lastCollectionDate)
+    lastCollectionDate = DateTime.fromJSDate(data.lastCollectionDate).setZone(
+      "Asia/Manila"
+    )
+
   return (
     <section className="grid gap-8 px-8 py-8 pb-0 lg:grid-cols-2">
       <Card>
@@ -57,20 +63,17 @@ export function AnalyticalCards({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <h1
-            suppressHydrationWarning
-            className="scroll-m-20 text-xl font-semibold tracking-tight"
-          >
-            {data.lastCollectionDate
-              ? format(data.lastCollectionDate, "hh:mm a")
+          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            {lastCollectionDate
+              ? lastCollectionDate.toFormat("hh:mm a")
               : "N/A"}
           </h1>
         </CardContent>
         <CardFooter>
           <HugeiconsIcon size={16} icon={Calendar04FreeIcons} />
-          <p suppressHydrationWarning className="ml-1">
-            {data.lastCollectionDate
-              ? format(data.lastCollectionDate, "M/d/yyyy")
+          <p className="ml-1">
+            {lastCollectionDate
+              ? lastCollectionDate.toFormat("M/d/yyyy")
               : "N/A"}
           </p>
         </CardFooter>

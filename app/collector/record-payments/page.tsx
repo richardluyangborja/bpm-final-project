@@ -20,6 +20,7 @@ import NewPaymentDrawer from "./components/NewPaymentDrawer"
 import { verifySession } from "@/lib/dal"
 import PaymentRecordsTable from "./components/PaymentRecordsTable"
 import { AutoRefresh } from "@/components/util/AutoRefresh"
+import { DateTime } from "luxon"
 
 export default async function page() {
   const session = await verifySession()
@@ -65,17 +66,17 @@ export default async function page() {
     },
   })
 
-  const todayStart = new Date()
-  todayStart.setHours(0, 0, 0, 0)
+  const zone = "Asia/Manila"
 
-  const todayEnd = new Date()
-  todayEnd.setHours(23, 59, 59, 999)
+  const start = DateTime.now().setZone(zone).startOf("day").toUTC().toJSDate()
+
+  const end = DateTime.now().setZone(zone).endOf("day").toUTC().toJSDate()
 
   const dueToday = await prisma.loanInstallment.findMany({
     where: {
       dueDate: {
-        gte: todayStart,
-        lte: todayEnd,
+        gte: start,
+        lte: end,
       },
       status: "PENDING",
     },
@@ -92,7 +93,7 @@ export default async function page() {
   const overdue = await prisma.loanInstallment.findMany({
     where: {
       dueDate: {
-        lt: todayStart,
+        lt: start,
       },
       status: "PENDING",
     },

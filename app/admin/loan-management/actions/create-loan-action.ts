@@ -5,6 +5,7 @@ import { verifySession } from "@/lib/dal"
 import { revalidatePath } from "next/cache"
 import { getIpAddress } from "@/lib/get-ip-address"
 import { money } from "@/lib/money"
+import { DateTime } from "luxon"
 
 export async function createLoanAction(data: {
   borrowerId: string
@@ -15,6 +16,8 @@ export async function createLoanAction(data: {
   paymentFrequency: "WEEKLY" | "MONTHLY"
   startDate: string
 }) {
+  const zone = "Asia/Manila"
+
   const session = await verifySession()
   if (session.role !== "ADMIN") return
 
@@ -30,21 +33,23 @@ export async function createLoanAction(data: {
 
   const installmentAmount = Math.floor(totalBalance / data.numberOfPayments)
 
-  const [y, m, d] = data.startDate.split("-").map(Number)
-  const startDate = new Date(y, m - 1, d)
+  const startDateLuxon = DateTime.fromISO(data.startDate, { zone }).startOf(
+    "day"
+  )
+
+  const startDate = startDateLuxon.toUTC().toJSDate()
 
   const installments = Array.from({ length: data.numberOfPayments }, (_, i) => {
-    const dueDate = new Date(startDate)
-    dueDate.setHours(0, 0, 0, 0)
+    let due = startDateLuxon
 
     if (data.paymentFrequency === "MONTHLY") {
-      dueDate.setMonth(dueDate.getMonth() + i + 1)
+      due = due.plus({ months: i + 1 })
     } else {
-      dueDate.setDate(dueDate.getDate() + (i + 1) * 7)
+      due = due.plus({ weeks: i + 1 })
     }
 
     return {
-      dueDate,
+      dueDate: due.startOf("day").toUTC().toJSDate(),
       amount: installmentAmount,
     }
   })

@@ -27,6 +27,7 @@ import { ReceiptDocument } from "./ReceiptDocument"
 import { format } from "date-fns"
 import { money } from "@/lib/money"
 import { use } from "react"
+import { DateTime } from "luxon"
 
 export default function PaymentRecordsTable({
   paymentsPromise,
@@ -51,35 +52,40 @@ export default function PaymentRecordsTable({
         </TableHeader>
         <TableBody>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {payments.map((p: any) => (
-            <TableRow key={p.id}>
-              <TableCell>
-                <div>
-                  <p suppressHydrationWarning className="text-sm">
-                    {format(p.createdAt, "M/d/yyyy")}
-                  </p>
-                  <p suppressHydrationWarning className="text-muted-foreground">
-                    {format(p.createdAt, "hh:mm a")}
-                  </p>
-                </div>
-              </TableCell>
+          {payments.map((p: any) => {
+            const dt = DateTime.fromJSDate(p.createdAt).setZone("Asia/Manila")
 
-              <TableCell>{p.loan.borrower.name}</TableCell>
+            return (
+              <TableRow key={p.id}>
+                <TableCell>
+                  <div>
+                    <p className="text-sm">{dt.toFormat("M/d/yyyy")}</p>
+                    <p
+                      suppressHydrationWarning
+                      className="text-muted-foreground"
+                    >
+                      {dt.toFormat("hh:mm a")}
+                    </p>
+                  </div>
+                </TableCell>
 
-              <TableCell>{p.loan.purpose ?? "—"}</TableCell>
+                <TableCell>{p.loan.borrower.name}</TableCell>
 
-              <TableCell className="text-sm font-semibold text-emerald-400">
-                {money.format(money.fromCents(p.amount))}
-              </TableCell>
+                <TableCell>{p.loan.purpose ?? "—"}</TableCell>
 
-              <TableCell>
-                <div className="flex gap-3">
-                  <ViewNotes notes={p.notes} />
-                  <ViewReceipt payment={p} />
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell className="text-sm font-semibold text-emerald-400">
+                  {money.format(money.fromCents(p.amount))}
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex gap-3">
+                    <ViewNotes notes={p.notes} />
+                    <ViewReceipt payment={p} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </section>

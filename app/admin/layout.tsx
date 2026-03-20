@@ -4,6 +4,7 @@ import AccountDropdown from "./components/AccountDropdown"
 import prisma from "@/lib/prisma"
 import { verifySession } from "@/lib/dal"
 import AnalyticalCards from "./components/AnalyticalCards"
+import { DateTime } from "luxon"
 
 export default async function layout({ children }: { children: ReactNode }) {
   const session = await verifySession()
@@ -38,18 +39,18 @@ export default async function layout({ children }: { children: ReactNode }) {
 }
 
 async function getAnalytics() {
-  const todayStart = new Date()
-  todayStart.setHours(0, 0, 0, 0)
+  const zone = "Asia/Manila"
 
-  const todayEnd = new Date()
-  todayEnd.setHours(23, 59, 59, 999)
+  const start = DateTime.now().setZone(zone).startOf("day").toUTC().toJSDate()
+
+  const end = DateTime.now().setZone(zone).endOf("day").toUTC().toJSDate()
 
   // total collection today
   const paymentsToday = await prisma.payment.findMany({
     where: {
       createdAt: {
-        gte: todayStart,
-        lte: todayEnd,
+        gte: start,
+        lte: end,
       },
     },
     include: {

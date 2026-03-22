@@ -16,6 +16,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import AiAuditSummary from "./components/AiAuditSummary"
+import { DateTime } from "luxon"
 
 export default async function page() {
   const data = await prisma.auditTrail.findMany({
@@ -70,6 +71,8 @@ function ActivityCard({
     ipAddress: string
   }
 }) {
+  const dt = DateTime.fromJSDate(data.createdAt).setZone("Asia/Manila")
+
   return (
     <Card>
       <CardHeader>
@@ -91,7 +94,9 @@ function ActivityCard({
             </div>
           </CardTitle>
         )}
-        <CardDescription>{data.createdAt.toLocaleString()}</CardDescription>
+        <CardDescription>
+          {dt.toFormat("M/d/yyyy")}, {dt.toFormat("hh:mm a")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground">

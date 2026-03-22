@@ -35,7 +35,6 @@ export async function generateAuditSummary(range: Range) {
     return "No audit trail data found for the selected period."
   }
 
-  // 🔥 Keep this structured (AI loves structure)
   const formattedLogs = logs
     .map((log) => {
       return `
@@ -66,6 +65,7 @@ Requirements:
 - Provide insights, not just summaries
 - Include recommendations if necessary
 - Do not add formatting like a markdown, keep it plain text.
+- Keep the date of report same as the current date right now
 
 Format:
 1. Overview

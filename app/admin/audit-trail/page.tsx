@@ -15,6 +15,7 @@ import {
   ServerStack01FreeIcons,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import AiAuditSummary from "./components/AiAuditSummary"
 
 export default async function page() {
   const data = await prisma.auditTrail.findMany({
@@ -23,25 +24,32 @@ export default async function page() {
   })
 
   return (
-    <section className="p-8">
-      <AutoRefresh />
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <HugeiconsIcon icon={ServerStack01FreeIcons} />
-            <div>
-              <CardTitle>Audit Trail</CardTitle>
-              <CardDescription>Immutable log of all activities</CardDescription>
+    <>
+      <section className="px-8 pt-8">
+        <AiAuditSummary />
+      </section>
+      <section className="p-8">
+        <AutoRefresh />
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <HugeiconsIcon icon={ServerStack01FreeIcons} />
+              <div>
+                <CardTitle>Audit Trail</CardTitle>
+                <CardDescription>
+                  Immutable log of all activities
+                </CardDescription>
+              </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {data.map((d) => (
-            <ActivityCard key={d.id} data={d} />
-          ))}
-        </CardContent>
-      </Card>
-    </section>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            {data.map((d) => (
+              <ActivityCard key={d.id} data={d} />
+            ))}
+          </CardContent>
+        </Card>
+      </section>
+    </>
   )
 }
 

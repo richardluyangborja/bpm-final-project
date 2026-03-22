@@ -1,6 +1,6 @@
 import "dotenv/config"
 
-// import { PrismaPg } from "@prisma/adapter-pg"
+import { PrismaPg } from "@prisma/adapter-pg"
 import { PrismaNeon } from "@prisma/adapter-neon"
 import { PrismaClient } from "@/generated/prisma/client"
 

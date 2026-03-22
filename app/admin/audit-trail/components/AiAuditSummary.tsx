@@ -22,6 +22,11 @@ import {
 
 import { PDFDownloadLink } from "@react-pdf/renderer"
 import { AuditReportPdf } from "./AuditReportPdf"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  AiFileFreeIcons,
+  Download02FreeIcons,
+} from "@hugeicons/core-free-icons"
 
 export default function AiAuditSummary() {
   const [range, setRange] = useState<"today" | "7days" | "30days">("today")
@@ -55,6 +60,7 @@ export default function AiAuditSummary() {
       </Select>
 
       <Button onClick={handleGenerate} disabled={pending}>
+        <HugeiconsIcon icon={AiFileFreeIcons} />
         {pending ? "Generating report..." : "Generate AI Report"}
       </Button>
 
@@ -71,6 +77,7 @@ export default function AiAuditSummary() {
           >
             {({ loading }) => (
               <Button variant="outline">
+                <HugeiconsIcon icon={Download02FreeIcons} />
                 {loading ? "Preparing PDF..." : "Download PDF"}
               </Button>
             )}

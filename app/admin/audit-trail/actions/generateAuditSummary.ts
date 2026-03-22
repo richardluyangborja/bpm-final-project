@@ -65,7 +65,7 @@ Requirements:
 - Provide insights, not just summaries
 - Include recommendations if necessary
 - Do not add formatting like a markdown, keep it plain text.
-- Keep the date of report same as the current date right now
+- Do not add date of report.
 
 Format:
 1. Overview
